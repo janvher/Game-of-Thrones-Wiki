@@ -1,6 +1,6 @@
 self.addEventListener('push', (event) => {
   let data = {
-    title: 'Jan Genvher PapicaExam',
+    title: 'Umpisa Inc - Jan Genvher Papica Exam',
     body: 'You have a new update.',
     url: '/dashboard',
   };

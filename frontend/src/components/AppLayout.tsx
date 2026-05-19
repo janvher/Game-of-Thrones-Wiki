@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { usePageAnalytics } from '../hooks/usePageAnalytics';
+import { useCourtGame } from '../hooks/useCourtGame';
 import { Button } from './ui/Button';
 
 const navItems = [
@@ -12,6 +13,7 @@ const navItems = [
 
 export function AppLayout() {
   const { user, logout } = useAuth();
+  const { progress } = useCourtGame();
   usePageAnalytics();
 
   return (
@@ -36,6 +38,14 @@ export function AppLayout() {
           ))}
         </nav>
         <div className="sidebar-footer">
+          {progress && (
+            <div className="sidebar-level">
+              <span className="sidebar-level__badge">Lv {progress.level}</span>
+              <span className="sidebar-level__xp">
+                {progress.xpIntoLevel}/{progress.xpForNextLevel} XP
+              </span>
+            </div>
+          )}
           <p className="user-greeting">Hello, {user?.name}</p>
           <Button variant="ghost" onClick={logout}>
             Leave the realm

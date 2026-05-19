@@ -2,9 +2,12 @@ import type {
   AuthResponse,
   Character,
   CharacterListItem,
+  CourtBriefing,
+  CourtProgress,
   Favorite,
   PageViewSummary,
   PaginatedCharacters,
+  RealmInsights,
   User,
   WikiArticle,
 } from '../types';
@@ -106,6 +109,12 @@ export const api = {
 
   getAnalyticsSummary: (token: string) =>
     request<PageViewSummary[]>('/analytics/summary', { token }),
+
+  getCourtProgress: (token: string) => request<CourtProgress>('/court/progress', { token }),
+
+  getCourtBriefing: (token: string) => request<CourtBriefing>('/court/briefing', { token }),
+
+  getRealmInsights: (token: string) => request<RealmInsights>('/court/realm-insights', { token }),
 
   getVapidPublicKey: () => request<{ publicKey: string }>('/push/vapid-public-key'),
 

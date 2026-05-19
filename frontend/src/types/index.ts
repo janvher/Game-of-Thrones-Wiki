@@ -64,3 +64,64 @@ export interface PageViewSummary {
   path: string;
   views: number;
 }
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  unlocked: boolean;
+  progress: number;
+  target: number;
+}
+
+export interface CourtProgress {
+  level: number;
+  xp: number;
+  xpIntoLevel: number;
+  xpForNextLevel: number;
+  courtSize: number;
+  uniqueCultures: number;
+  uniqueHouses: number;
+  totalPageViews: number;
+  achievements: Achievement[];
+  unlockedCount: number;
+}
+
+export interface CourtBriefing {
+  greeting: string;
+  summary: string;
+  lastVisitedPath: string | null;
+  lastVisitedLabel: string | null;
+  nextGoal: { name: string; description: string; progress: number; target: number } | null;
+  recommendedCharacter: {
+    id: number;
+    name: string;
+    culture: string;
+    imageUrl?: string;
+    reason: string;
+  } | null;
+}
+
+export interface TrendingPath {
+  path: string;
+  views: number;
+  label: string;
+}
+
+export interface ActivityDay {
+  date: string;
+  views: number;
+}
+
+export interface SectionViews {
+  section: string;
+  views: number;
+}
+
+export interface RealmInsights {
+  trending: TrendingPath[];
+  trendingCharacters: Array<{ characterId: number; views: number }>;
+  activityByDay: ActivityDay[];
+  viewsBySection: SectionViews[];
+}
