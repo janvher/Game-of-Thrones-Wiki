@@ -1,10 +1,17 @@
 import type {
+  ArenaAction,
+  ArenaBattle,
+  ArenaMode,
+  ArenaProfile,
   AuthResponse,
+  BattleEvent,
   Character,
   CharacterListItem,
   CourtBriefing,
   CourtProgress,
   Favorite,
+  LeaderboardEntry,
+  LoadoutTrait,
   PageViewSummary,
   PaginatedCharacters,
   RealmInsights,
@@ -115,6 +122,67 @@ export const api = {
   getCourtBriefing: (token: string) => request<CourtBriefing>('/court/briefing', { token }),
 
   getRealmInsights: (token: string) => request<RealmInsights>('/court/realm-insights', { token }),
+
+  getArenaProfile: (token: string) => request<ArenaProfile>('/arena/profile', { token }),
+
+  getArenaLeaderboard: (token: string) =>
+    request<LeaderboardEntry[]>('/arena/leaderboard', { token }),
+
+  getActiveArenaBattle: (token: string) =>
+    request<ArenaBattle | null>('/arena/battle/active', { token }),
+
+  updateArenaLoadout: (
+    token: string,
+    loadout: { houseBonus?: string | null; trait?: LoadoutTrait },
+  ) =>
+    request<{ houseBonus: string | null; trait: LoadoutTrait }>('/arena/loadout', {
+      method: 'PUT',
+      token,
+      body: JSON.stringify(loadout),
+    }),
+
+  startArenaBattle: (
+    token: string,
+    body: {
+      mode: ArenaMode;
+      playerCharacterId: number;
+      opponentCharacterId?: number;
+      playerTeamIds?: number[];
+    },
+  ) =>
+    request<ArenaBattle>('/arena/battle/start', {
+      method: 'POST',
+      token,
+      body: JSON.stringify(body),
+    }),
+
+  submitArenaTurn: (token: string, battleId: string, action: ArenaAction) =>
+    request<{
+      battle: ArenaBattle;
+      events: BattleEvent[];
+      battleComplete: boolean;
+      tournamentAdvanced: boolean;
+      matchResult: {
+        winnerSide: string;
+        pointsEarned: number;
+        rating: number;
+        summary: string;
+      } | null;
+    }>('/arena/battle/turn', {
+      method: 'POST',
+      token,
+      body: JSON.stringify({ battleId, action }),
+    }),
+
+  forfeitArenaBattle: (token: string, battleId: string) =>
+    request<{
+      battle: ArenaBattle;
+      matchResult: { winnerSide: string; pointsEarned: number; rating: number; summary: string };
+    }>('/arena/battle/forfeit', {
+      method: 'POST',
+      token,
+      body: JSON.stringify({ battleId }),
+    }),
 
   getVapidPublicKey: () => request<{ publicKey: string }>('/push/vapid-public-key'),
 

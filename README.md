@@ -14,15 +14,16 @@ Game of Thrones saga hub: browse characters, read Wiki of Thrones lore, and save
 | Unit tests | Vitest (frontend + backend) |
 | MongoDB | Users, favorites, page-view analytics |
 | Docker | `docker compose up --build` |
-| Nice-to-have | GraphQL · Web Push · page analytics |
+| Nice-to-have | GraphQL · Web Push · page analytics · **Arena combat game** |
 
 ## Screens
 
-- **Great Hall** — dashboard, lore feed, analytics summary  
+- **Great Hall** — charts (visits, actions, arena results), lore feed  
 - **Character Hub** — 3×3 paginated roster with portraits  
 - **Character Detail** — saga fields, status, linked wiki articles  
 - **Your Court** — saved favorites  
 - **Profile** — account, push notifications, GraphQL favorites panel  
+- **Arena** — turn-based combat (Strike / Defend / Rally), duel / team / tournament modes  
 
 ## Quick start
 

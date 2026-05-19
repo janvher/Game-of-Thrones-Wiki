@@ -2,71 +2,59 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
-import { useFavorites } from '../hooks/useFavorites';
-import { useCourtGame } from '../hooks/useCourtGame';
+import { createEmptyRealmInsights } from '../utils/emptyRealmInsights';
 import { WikiArticleCard } from '../components/WikiArticleCard';
 import { Card } from '../components/ui/Card';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
-import { SagaBriefing } from '../components/game/SagaBriefing';
-import { RealmCharts } from '../components/game/RealmCharts';
-import { BadgeGrid } from '../components/game/BadgeGrid';
-import type { WikiArticle } from '../types';
+import { DashboardCharts } from '../components/dashboard/DashboardCharts';
+import type { ArenaProfile, RealmInsights, WikiArticle } from '../types';
 
 export function DashboardPage() {
   const { token } = useAuth();
-  const { favorites, isLoading: favLoading } = useFavorites();
-  const { progress, briefing, insights, isLoading: courtLoading } = useCourtGame();
+  const [insights, setInsights] = useState<RealmInsights>(createEmptyRealmInsights());
+  const [arena, setArena] = useState<ArenaProfile | null>(null);
   const [hubPosts, setHubPosts] = useState<WikiArticle[]>([]);
   const [lorePosts, setLorePosts] = useState<WikiArticle[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (!token) return;
-    api.getWikiHub(token).then(setHubPosts).catch(() => {});
-    api.getWikiLore(token).then(setLorePosts).catch(() => {});
+    setIsLoading(true);
+    Promise.all([
+      api.getRealmInsights(token).then(setInsights).catch(() => setInsights(createEmptyRealmInsights())),
+      api.getArenaProfile(token).then(setArena).catch(() => setArena(null)),
+      api.getWikiHub(token).then(setHubPosts).catch(() => {}),
+      api.getWikiLore(token).then(setLorePosts).catch(() => {}),
+    ]).finally(() => setIsLoading(false));
   }, [token]);
 
   return (
-    <div className="page page--game">
+    <div className="page">
       <header className="page-header">
         <h1>Great Hall</h1>
-        <p>Your command center — build your court, complete quests, and read the realm.</p>
+        <p>Overview of your visits, actions, and arena results.</p>
       </header>
 
-      {courtLoading && <LoadingSpinner label="Preparing your briefing" />}
-
-      {!courtLoading && briefing && progress && (
-        <SagaBriefing briefing={briefing} progress={progress} />
+      {isLoading ? (
+        <LoadingSpinner label="Loading analytics" />
+      ) : (
+        <DashboardCharts insights={insights} arena={arena} />
       )}
 
-      {!courtLoading && insights && <RealmCharts insights={insights} />}
-
       <div className="grid-2">
-        <Card title="Quest: Explore the saga">
-          <p>Browse characters, filter by house, and recruit allies to your court.</p>
+        <Card title="Explore characters">
+          <p>Browse the saga roster and save favorites.</p>
           <Link to="/explorer" className="text-link">
-            Open Character Hub →
+            Character Hub →
           </Link>
         </Card>
-        <Card title="Quest: Grow your court">
-          <p>
-            {favLoading ? '…' : `${favorites.length} allies sworn`}
-            {progress ? ` · Level ${progress.level}` : ''}
-          </p>
-          <Link to="/favorites" className="text-link">
-            Your Court & compare →
+        <Card title="Arena">
+          <p>Fight in turn-based battles.</p>
+          <Link to="/arena" className="text-link">
+            Enter the Arena →
           </Link>
         </Card>
       </div>
-
-      {!courtLoading && progress && (
-        <section className="badges-section">
-          <h2>Court achievements</h2>
-          <p className="muted">
-            {progress.unlockedCount} of {progress.achievements.length} badges earned
-          </p>
-          <BadgeGrid achievements={progress.achievements} />
-        </section>
-      )}
 
       <section className="wiki-section">
         <h2>Latest from Wiki of Thrones</h2>

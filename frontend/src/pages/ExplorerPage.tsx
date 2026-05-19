@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { api, ApiError } from '../services/api';
 import { useFavorites } from '../hooks/useFavorites';
-import { useCourtGame } from '../hooks/useCourtGame';
 import { CharacterCard } from '../components/CharacterCard';
 import { FavoriteButton } from '../components/FavoriteButton';
 import { Button } from '../components/ui/Button';
@@ -25,7 +24,6 @@ const FETCH_SIZE_FILTERED = 50;
 export function ExplorerPage() {
   const { token } = useAuth();
   const { isFavorite, toggleFavorite, favorites } = useFavorites();
-  const { refresh: refreshCourt } = useCourtGame();
   const [pool, setPool] = useState<CharacterListItem[]>([]);
   const [apiPage, setApiPage] = useState(1);
   const [clientPage, setClientPage] = useState(1);
@@ -106,9 +104,8 @@ export function ExplorerPage() {
     setSearch(searchInput);
   }
 
-  async function handleFavorite(characterId: number, name: string) {
-    await toggleFavorite(characterId, name);
-    await refreshCourt();
+  function handleFavorite(characterId: number, name: string) {
+    void toggleFavorite(characterId, name);
   }
 
   const hasPrev = filtersActive ? clientPage > 1 : hasPrevApi;
@@ -125,7 +122,7 @@ export function ExplorerPage() {
   }
 
   return (
-    <div className="page page--game">
+    <div className="page">
       <header className="page-header">
         <h1>Character Hub</h1>
         <p>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
 import { useFavorites } from '../hooks/useFavorites';
@@ -7,9 +7,11 @@ import { WikiArticleCard } from '../components/WikiArticleCard';
 import { FavoriteButton } from '../components/FavoriteButton';
 import { Card } from '../components/ui/Card';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
+import { Button } from '../components/ui/Button';
 import type { Character } from '../types';
 
 export function CharacterDetailPage() {
+  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { token } = useAuth();
   const { isFavorite, toggleFavorite } = useFavorites();
@@ -67,12 +69,20 @@ export function CharacterDetailPage() {
           {character.titles.length > 0 && (
             <p className="detail-titles">{character.titles.join(' · ')}</p>
           )}
-          <FavoriteButton
-            isFavorite={isFavorite(characterId)}
-            onClick={() => {
-              void toggleFavorite(characterId, character.name);
-            }}
-          />
+          <div className="detail-actions">
+            <FavoriteButton
+              isFavorite={isFavorite(characterId)}
+              onClick={() => {
+                void toggleFavorite(characterId, character.name);
+              }}
+            />
+            <Button
+              variant="secondary"
+              onClick={() => navigate(`/arena?mode=duel&opponent=${characterId}`)}
+            >
+              ⚔ Challenge in Arena
+            </Button>
+          </div>
         </div>
       </header>
 

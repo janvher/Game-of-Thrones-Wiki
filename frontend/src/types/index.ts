@@ -125,3 +125,80 @@ export interface RealmInsights {
   activityByDay: ActivityDay[];
   viewsBySection: SectionViews[];
 }
+
+export type ArenaMode = 'duel' | 'team' | 'tournament';
+export type ArenaAction = 'strike' | 'defend' | 'rally';
+export type LoadoutTrait = 'aggressive' | 'defensive' | 'balanced';
+
+export interface ArenaFighter {
+  characterId: number;
+  name: string;
+  imageUrl?: string;
+  culture: string;
+  house: string | null;
+  attack: number;
+  defense: number;
+  maxHp: number;
+  hp: number;
+  status: string;
+  buffs: {
+    defendActive: boolean;
+    rallyActive: boolean;
+    damageReduction: number;
+  };
+}
+
+export interface ArenaBattle {
+  id: string;
+  mode: ArenaMode;
+  status: 'active' | 'complete';
+  player: ArenaFighter;
+  opponent: ArenaFighter;
+  playerTeam: ArenaFighter[];
+  opponentTeam: ArenaFighter[];
+  activePlayerTeamIndex: number;
+  activeOpponentTeamIndex: number;
+  turnNumber: number;
+  log: string[];
+  loadout: { houseBonus: string | null; trait: LoadoutTrait };
+  tournament?: { round: number; bracketOpponentIds: number[]; currentOpponentIndex: number };
+  winnerSide: 'player' | 'opponent' | null;
+}
+
+export interface BattleEvent {
+  actor: 'player' | 'opponent';
+  action: ArenaAction;
+  damage: number;
+  message: string;
+}
+
+export interface ArenaProfile {
+  rating: number;
+  wins: number;
+  losses: number;
+  currentStreak: number;
+  bestStreak: number;
+  totalDamageDealt: number;
+  tournamentWins: number;
+  teamBattleWins: number;
+  rank: number;
+  loadout: { houseBonus: string | null; trait: LoadoutTrait };
+  recentMatches: Array<{
+    id: string;
+    mode: ArenaMode;
+    winnerSide: string;
+    summary: string;
+    pointsEarned: number;
+    ratingAfter: number;
+    playedAt: string;
+  }>;
+}
+
+export interface LeaderboardEntry {
+  rank: number;
+  name: string;
+  rating: number;
+  wins: number;
+  losses: number;
+  bestStreak: number;
+}
