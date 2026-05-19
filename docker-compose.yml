@@ -1,0 +1,42 @@
+services:
+  mongo:
+    image: mongo:7
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--eval', "db.adminCommand('ping')"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: ./backend
+    ports:
+      - '3001:3001'
+    environment:
+      PORT: 3001
+      JWT_SECRET: umpisa-docker-secret
+      MONGODB_URI: mongodb://mongo:27017/umpisa
+      ICE_AND_FIRE_BASE_URL: https://anapioficeandfire.com/api
+      WIKI_OF_THRONES_BASE_URL: https://wikiofthrones.com/wp-json/wp/v2
+      THRONES_API_BASE_URL: https://thronesapi.com/api/v2
+      WIKI_LORE_CATEGORY_ID: "174"
+      VAPID_PUBLIC_KEY: BAf5XPCZju5ICK_hPAqUGVqBOR951LVkTOisd6GCLAEL-iYvwT6G8l_t9IcPyug1hsf1ijT3mnXMcv2PxX0KsHU
+      VAPID_PRIVATE_KEY: XwwG8XoTIrPu1nW2JUYNTh0-XZS3Y9Xibbp8QAehALw
+      VAPID_SUBJECT: mailto:demo@umpisa.dev
+      NODE_ENV: production
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - '5173:80'
+    depends_on:
+      - backend
+
+volumes:
+  mongo_data:

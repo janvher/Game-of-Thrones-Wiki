@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 500">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a1628"/>
+      <stop offset="100%" style="stop-color:#1a3a5c"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="500" fill="url(#bg)"/>
+  <circle cx="200" cy="160" r="70" fill="#5eb3d6" opacity="0.9"/>
+  <ellipse cx="200" cy="380" rx="120" ry="90" fill="#2a4a6a" opacity="0.8"/>
+  <text x="200" y="470" text-anchor="middle" fill="#c9a227" font-family="Georgia,serif" font-size="28">Night King</text>
+</svg>
