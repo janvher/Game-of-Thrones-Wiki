@@ -30,7 +30,7 @@ async function main(): Promise<void> {
 
   const app = createApp();
   app.listen(config.port, () => {
-    console.log(`Jan Genvher PapicaExam API on http://localhost:${config.port}`);
+    console.log(`Umpisa Inc - Jan Genvher Papica Exam API on http://localhost:${config.port}`);
   });
 }
 
