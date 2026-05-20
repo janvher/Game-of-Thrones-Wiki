@@ -149,3 +149,66 @@ Optional: `npm run generate-vapid --prefix backend` then copy keys to `backend/.
 | **concurrently** | Runs backend and frontend with one `npm run dev` |
 | **Vitest** | Unit tests for API helpers and UI components |
 | **Supertest** | HTTP integration tests against Express routes |
+
+---
+
+## Gallery
+
+Visual index of the **Umpisa Inc — Jan Genvher Papica Exam** app: screens for login, browsing the saga, favorites, analytics, and arena combat. Use this section for quick review without running the project.
+
+What's included:
+
+- **Login** — sign-in and demo account entry.
+- **Great Hall** — analytics charts (visits, actions, arena results) and Wiki of Thrones feed.
+- **Explore** — Character Hub filters and character detail with wiki links.
+- **Your Court** — saved favorites.
+- **Arena** — champion setup and live turn-based battle.
+- **Profile** — account, push notifications, and GraphQL favorites.
+
+---
+
+## Login
+
+| [![Login — Enter the realm](Screenshots/login.png)](Screenshots/login.png) |
+|:---:|
+| Login — Enter the realm |
+
+---
+
+## Great Hall
+
+| [![Great Hall — Analytics](Screenshots/great-hall-analytics.png)](Screenshots/great-hall-analytics.png) | [![Great Hall — Wiki feed](Screenshots/great-hall-wiki.png)](Screenshots/great-hall-wiki.png) |
+|:---:|:---:|
+| Analytics (visits, actions, arena results) | Latest from Wiki of Thrones |
+
+---
+
+## Explore
+
+| [![Character Hub](Screenshots/character-hub.png)](Screenshots/character-hub.png) | [![Character Detail](Screenshots/character-detail.png)](Screenshots/character-detail.png) |
+|:---:|:---:|
+| Character Hub — search and filters | Character detail — saga fields and arena challenge |
+
+---
+
+## Your Court
+
+| [![Your Court — Favorites](Screenshots/your-court.png)](Screenshots/your-court.png) |
+|:---:|
+| Saved characters with quick links to the Arena |
+
+---
+
+## Arena
+
+| [![Arena — Setup](Screenshots/arena-setup.png)](Screenshots/arena-setup.png) | [![Arena — Battle](Screenshots/arena-battle.png)](Screenshots/arena-battle.png) |
+|:---:|:---:|
+| Duel setup, loadout, and champion select | Turn-based combat (Strike / Defend / Rally) |
+
+---
+
+## Profile
+
+| [![Profile — Account and integrations](Screenshots/profile.png)](Screenshots/profile.png) |
+|:---:|
+| Account, push notifications, and GraphQL favorites |
