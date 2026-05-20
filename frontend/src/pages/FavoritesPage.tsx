@@ -14,7 +14,10 @@ export function FavoritesPage() {
     <div className="page">
       <header className="page-header">
         <h1>Your Court</h1>
-        <p>Characters saved to MongoDB for your account.</p>
+        <p>Characters saved to your account.</p>
+        <Link to="/arena">
+          <Button>Enter the Arena</Button>
+        </Link>
       </header>
 
       {isLoading && <LoadingSpinner label="Loading favorites" />}
@@ -22,7 +25,7 @@ export function FavoritesPage() {
       {!isLoading && favorites.length === 0 && (
         <EmptyState
           title="No favorites yet"
-          description="Explore the saga and add characters to your court."
+          description="Explore the Character Hub and add characters to your court."
           action={
             <Link to="/explorer">
               <Button>Browse characters</Button>
@@ -53,7 +56,7 @@ export function FavoritesPage() {
                   isFavorite
                   onClick={(e) => {
                     e.stopPropagation();
-                    toggleFavorite(f.characterId, f.characterName);
+                    void toggleFavorite(f.characterId, f.characterName);
                   }}
                 />
               }

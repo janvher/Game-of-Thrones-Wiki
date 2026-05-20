@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { api, ApiError } from '../services/api';
 import { useFavorites } from '../hooks/useFavorites';
@@ -8,29 +8,68 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 import { EmptyState } from '../components/ui/EmptyState';
+import { ExplorerFiltersBar } from '../components/game/ExplorerFiltersBar';
 import { dedupeCharacters } from '../utils/dedupeCharacters';
+import {
+  applyExplorerFilters,
+  DEFAULT_EXPLORER_FILTERS,
+  uniqueCultures,
+  type ExplorerFilters,
+} from '../utils/characterFilters';
 import type { CharacterListItem } from '../types';
 
 const CHARACTERS_PER_PAGE = 9;
+const FETCH_SIZE_FILTERED = 50;
 
 export function ExplorerPage() {
   const { token } = useAuth();
-  const { isFavorite, toggleFavorite } = useFavorites();
-  const [characters, setCharacters] = useState<CharacterListItem[]>([]);
-  const [page, setPage] = useState(1);
-  const [hasNext, setHasNext] = useState(false);
-  const [hasPrev, setHasPrev] = useState(false);
+  const { isFavorite, toggleFavorite, favorites } = useFavorites();
+  const [pool, setPool] = useState<CharacterListItem[]>([]);
+  const [apiPage, setApiPage] = useState(1);
+  const [clientPage, setClientPage] = useState(1);
+  const [hasNextApi, setHasNextApi] = useState(false);
+  const [hasPrevApi, setHasPrevApi] = useState(false);
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
+  const [filters, setFilters] = useState<ExplorerFilters>(DEFAULT_EXPLORER_FILTERS);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const filtersActive =
+    filters.gender !== 'all' ||
+    filters.culture !== 'all' ||
+    filters.court !== 'all' ||
+    filters.sort !== 'name';
+
+  const favoriteIds = useMemo(() => new Set(favorites.map((f) => f.characterId)), [favorites]);
+
+  const filteredPool = useMemo(
+    () => applyExplorerFilters(pool, filters, favoriteIds),
+    [pool, filters, favoriteIds],
+  );
+
+  const cultures = useMemo(() => uniqueCultures(pool), [pool]);
+
+  const clientPageCount = Math.max(1, Math.ceil(filteredPool.length / CHARACTERS_PER_PAGE));
+  const displayCharacters = useMemo(() => {
+    if (filtersActive) {
+      const start = (clientPage - 1) * CHARACTERS_PER_PAGE;
+      return filteredPool.slice(start, start + CHARACTERS_PER_PAGE);
+    }
+    return filteredPool;
+  }, [filteredPool, filtersActive, clientPage]);
+
+  useEffect(() => {
+    setClientPage(1);
+  }, [filters, search]);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       if (!token) return;
-      const requestPage = page;
+      const requestPage = apiPage;
       const requestSearch = search;
+      const pageSize = filtersActive ? FETCH_SIZE_FILTERED : CHARACTERS_PER_PAGE;
       setIsLoading(true);
       setError(null);
       try {
@@ -38,13 +77,13 @@ export function ExplorerPage() {
           token,
           requestPage,
           requestSearch || undefined,
-          CHARACTERS_PER_PAGE,
+          pageSize,
         );
         if (cancelled) return;
-        const unique = dedupeCharacters(data.results).slice(0, CHARACTERS_PER_PAGE);
-        setCharacters(unique);
-        setHasNext(data.hasNext);
-        setHasPrev(data.hasPrevious);
+        const unique = dedupeCharacters(data.results);
+        setPool(filtersActive ? unique : unique.slice(0, CHARACTERS_PER_PAGE));
+        setHasNextApi(data.hasNext);
+        setHasPrevApi(data.hasPrevious);
       } catch (err) {
         if (cancelled) return;
         setError(
@@ -57,12 +96,29 @@ export function ExplorerPage() {
     return () => {
       cancelled = true;
     };
-  }, [token, page, search]);
+  }, [token, apiPage, search, filtersActive]);
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
-    setPage(1);
+    setApiPage(1);
     setSearch(searchInput);
+  }
+
+  function handleFavorite(characterId: number, name: string) {
+    void toggleFavorite(characterId, name);
+  }
+
+  const hasPrev = filtersActive ? clientPage > 1 : hasPrevApi;
+  const hasNext = filtersActive ? clientPage < clientPageCount : hasNextApi;
+
+  function goPrev() {
+    if (filtersActive) setClientPage((p) => p - 1);
+    else setApiPage((p) => p - 1);
+  }
+
+  function goNext() {
+    if (filtersActive) setClientPage((p) => p + 1);
+    else setApiPage((p) => p + 1);
   }
 
   return (
@@ -70,11 +126,8 @@ export function ExplorerPage() {
       <header className="page-header">
         <h1>Character Hub</h1>
         <p>
-          Full saga roster from An API of Ice and Fire, with lore links from{' '}
-          <a href="https://wikiofthrones.com/" target="_blank" rel="noreferrer">
-            Wiki of Thrones
-          </a>
-          . Only characters with portraits are shown (9 per page).
+          Recruit allies for your court. Filter by house, gender, and court status — then swear the
+          worthy.
         </p>
       </header>
 
@@ -89,18 +142,32 @@ export function ExplorerPage() {
         <Button type="submit">Search</Button>
       </form>
 
+      <ExplorerFiltersBar
+        filters={filters}
+        cultures={cultures}
+        onChange={setFilters}
+        onReset={() => setFilters(DEFAULT_EXPLORER_FILTERS)}
+      />
+
+      {filtersActive && (
+        <p className="filter-hint muted">
+          Showing {filteredPool.length} match(es) from this batch · page {clientPage} of{' '}
+          {clientPageCount}
+        </p>
+      )}
+
       {isLoading && <LoadingSpinner label="Summoning characters" />}
       {error && <p className="form-error">{error}</p>}
 
-      {!isLoading && !error && characters.length === 0 && (
+      {!isLoading && !error && displayCharacters.length === 0 && (
         <EmptyState
-          title="No characters found"
-          description="Try another name, house, or alias from the books or shows."
+          title="No characters match"
+          description="Try resetting filters or searching another name, house, or alias."
         />
       )}
 
       <div className="card-grid card-grid--hub">
-        {characters.map((c) => (
+        {displayCharacters.map((c) => (
           <CharacterCard
             key={`${c.id}-${c.name}`}
             character={c}
@@ -109,7 +176,7 @@ export function ExplorerPage() {
                 isFavorite={isFavorite(c.id)}
                 onClick={(e) => {
                   e.stopPropagation();
-                  toggleFavorite(c.id, c.name);
+                  void handleFavorite(c.id, c.name);
                 }}
               />
             }
@@ -118,11 +185,13 @@ export function ExplorerPage() {
       </div>
 
       <div className="pagination">
-        <Button variant="ghost" disabled={!hasPrev} onClick={() => setPage((p) => p - 1)}>
+        <Button variant="ghost" disabled={!hasPrev} onClick={goPrev}>
           Previous
         </Button>
-        <span>Page {page}</span>
-        <Button variant="ghost" disabled={!hasNext} onClick={() => setPage((p) => p + 1)}>
+        <span>
+          {filtersActive ? `Page ${clientPage}` : `Page ${apiPage}`}
+        </span>
+        <Button variant="ghost" disabled={!hasNext} onClick={goNext}>
           Next
         </Button>
       </div>

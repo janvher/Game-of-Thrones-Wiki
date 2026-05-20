@@ -83,7 +83,7 @@ export async function sendTestPush(
   }
 
   await sendPushToUser(userId, {
-    title: 'Jan Genvher PapicaExam',
+    title: 'Umpisa Inc - Jan Genvher Papica Exam',
     body: 'Push notifications are working. Winter is coming.',
     url: '/dashboard',
   });

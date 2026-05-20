@@ -1,5 +1,10 @@
 import { Favorite } from '../models/Favorite.js';
 import { fetchCharacter, toCharacterSnapshot } from './iceAndFire.js';
+import {
+  getCourtProgress,
+  getNewlyUnlockedAchievement,
+  milestoneMessageForAchievement,
+} from './courtService.js';
 import { sendPushToUser } from './pushNotifications.js';
 import type { Types } from 'mongoose';
 
@@ -26,6 +31,7 @@ export async function addFavorite(userId: Types.ObjectId, characterId: number) {
     throw err;
   }
 
+  const beforeProgress = await getCourtProgress(userId);
   const character = await fetchCharacter(characterId);
   const favorite = await Favorite.create({
     userId,
@@ -35,11 +41,28 @@ export async function addFavorite(userId: Types.ObjectId, characterId: number) {
   });
 
   try {
-    await sendPushToUser(userId, {
-      title: 'Added to your court',
-      body: `${character.name} is now in your favorites.`,
-      url: `/characters/${characterId}`,
-    });
+    const progress = await getCourtProgress(userId);
+    const newBadge = getNewlyUnlockedAchievement(beforeProgress, progress);
+    const milestone = newBadge ? milestoneMessageForAchievement(newBadge) : null;
+    if (milestone) {
+      await sendPushToUser(userId, {
+        title: milestone.title,
+        body: milestone.body,
+        url: '/favorites',
+      });
+    } else if (progress.courtSize < 3) {
+      await sendPushToUser(userId, {
+        title: 'Added to your court',
+        body: `${character.name} joined your court. ${3 - progress.courtSize} more for Small Council.`,
+        url: `/characters/${characterId}`,
+      });
+    } else {
+      await sendPushToUser(userId, {
+        title: 'New ally sworn',
+        body: `${character.name} is now in your court. Level ${progress.level} · ${progress.courtSize} allies.`,
+        url: `/characters/${characterId}`,
+      });
+    }
   } catch {
     /* push is optional; favorite save must succeed */
   }

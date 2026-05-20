@@ -6,6 +6,8 @@ import favoriteRoutes from './routes/favorites.js';
 import analyticsRoutes from './routes/analytics.js';
 import wikiRoutes from './routes/wiki.js';
 import pushRoutes from './routes/push.js';
+import courtRoutes from './routes/court.js';
+import arenaRoutes from './routes/arena.js';
 import { yoga } from './graphql/index.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { requireAuth } from './middleware/auth.js';
@@ -36,6 +38,8 @@ export function createApp() {
     app.use('/api/characters', characterRoutes);
     app.use('/api/favorites', favoriteRoutes);
     app.use('/api/analytics', analyticsRoutes);
+    app.use('/api/court', courtRoutes);
+    app.use('/api/arena', arenaRoutes);
     app.use('/api/wiki', wikiRoutes);
     app.use('/api/push', pushRoutes);
     app.use(yoga.graphqlEndpoint, yoga);

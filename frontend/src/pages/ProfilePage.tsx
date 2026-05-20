@@ -35,7 +35,7 @@ export function ProfilePage() {
       <PushNotificationSettings />
       <GraphQLFavoritesPanel />
 
-      <Card title="About Jan Genvher PapicaExam">
+      <Card title="About Umpisa Inc - Jan Genvher Papica Exam">
         <p>
           Game of Thrones saga explorer for the Full Stack Developer exam. React frontend,
           Node/Express API, MongoDB, GraphQL, push notifications, page analytics, character data

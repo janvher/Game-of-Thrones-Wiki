@@ -2,6 +2,11 @@ import { Router } from 'express';
 import { z } from 'zod';
 import { PageView } from '../models/PageView.js';
 import { requireAuth } from '../middleware/auth.js';
+import {
+  getTrendingPaths,
+  getUserActivityByDay,
+  getUserViewsBySection,
+} from '../services/analyticsInsights.js';
 
 const router = Router();
 
@@ -31,6 +36,33 @@ router.get('/summary', requireAuth, async (req, res, next) => {
     res.json(
       summary.map((s) => ({ path: s._id as string, views: s.count as number })),
     );
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/trending', requireAuth, async (_req, res, next) => {
+  try {
+    const trending = await getTrendingPaths(10);
+    res.json(trending);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/activity', requireAuth, async (req, res, next) => {
+  try {
+    const activity = await getUserActivityByDay(req.user!._id, 7);
+    res.json(activity);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/by-section', requireAuth, async (req, res, next) => {
+  try {
+    const sections = await getUserViewsBySection(req.user!._id);
+    res.json(sections);
   } catch (err) {
     next(err);
   }

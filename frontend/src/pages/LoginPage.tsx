@@ -40,7 +40,7 @@ export function LoginPage() {
       <div className="login-card">
         <div className="login-hero">
           <span className="brand-mark large">⚔</span>
-          <h1 className="login-title">Jan Genvher PapicaExam</h1>
+          <h1 className="login-title">Umpisa Inc - Jan Genvher Papica Exam</h1>
           <p>
             The full Game of Thrones saga — characters, lore, and articles from Wiki of Thrones.
           </p>

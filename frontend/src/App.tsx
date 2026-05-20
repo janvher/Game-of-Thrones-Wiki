@@ -7,6 +7,7 @@ import { ExplorerPage } from './pages/ExplorerPage';
 import { CharacterDetailPage } from './pages/CharacterDetailPage';
 import { FavoritesPage } from './pages/FavoritesPage';
 import { ProfilePage } from './pages/ProfilePage';
+import { ArenaPage } from './pages/ArenaPage';
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
         <Route path="explorer" element={<ExplorerPage />} />
         <Route path="characters/:id" element={<CharacterDetailPage />} />
         <Route path="favorites" element={<FavoritesPage />} />
+        <Route path="arena" element={<ArenaPage />} />
         <Route path="profile" element={<ProfilePage />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />

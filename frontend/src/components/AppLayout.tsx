@@ -7,6 +7,7 @@ const navItems = [
   { to: '/dashboard', label: 'Great Hall' },
   { to: '/explorer', label: 'Character Hub' },
   { to: '/favorites', label: 'Your Court' },
+  { to: '/arena', label: 'Arena' },
   { to: '/profile', label: 'Profile' },
 ];
 
@@ -20,7 +21,7 @@ export function AppLayout() {
         <div className="brand">
           <span className="brand-mark">⚔</span>
           <div>
-            <strong>Jan Genvher PapicaExam</strong>
+            <strong>Umpisa Inc - Jan Genvher Papica Exam</strong>
             <small>Wiki of Thrones Hub</small>
           </div>
         </div>
