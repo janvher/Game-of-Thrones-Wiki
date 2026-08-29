@@ -8,7 +8,7 @@ import { ApiError } from '../services/api';
 export function LoginPage() {
   const { user, login, register, isLoading } = useAuth();
   const [mode, setMode] = useState<'login' | 'register'>('login');
-  const [email, setEmail] = useState('demo@umpisa.dev');
+  const [email, setEmail] = useState('demo@thrones.app');
   const [password, setPassword] = useState('password123');
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -40,7 +40,7 @@ export function LoginPage() {
       <div className="login-card">
         <div className="login-hero">
           <span className="brand-mark large">⚔</span>
-          <h1 className="login-title">Umpisa Inc - Jan Genvher Papica Exam</h1>
+          <h1 className="login-title">Game of Thrones Wiki</h1>
           <p>
             The full Game of Thrones saga — characters, lore, and articles from Wiki of Thrones.
           </p>
@@ -86,7 +86,7 @@ export function LoginPage() {
               ? 'Need an account? Register'
               : 'Already have an account? Sign in'}
           </button>
-          <p className="demo-hint">Demo: demo@umpisa.dev / password123</p>
+          <p className="demo-hint">Demo: demo@thrones.app / password123</p>
         </form>
       </div>
     </div>

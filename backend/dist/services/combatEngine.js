@@ -4,7 +4,9 @@ function rollVariance() {
 function calcDamage(attacker, defender, action) {
     if (action === 'defend')
         return 0;
-    let power = attacker.attack + rollVariance();
+    const atk = Number(attacker.attack) || 10;
+    const def = Number(defender.defense) || 10;
+    let power = atk + rollVariance();
     if (action === 'rally' && attacker.buffs.rallyActive) {
         power = Math.floor(power * 1.45);
     }
@@ -12,30 +14,40 @@ function calcDamage(attacker, defender, action) {
         power = Math.floor(power * 1.25);
         attacker.buffs.rallyActive = false;
     }
-    let mitigation = defender.defense * 0.35;
-    if (defender.buffs.defendActive) {
-        mitigation += defender.defense * 0.4;
+    let mitigation = def * 0.35;
+    if (defender.buffs?.defendActive) {
+        mitigation += def * 0.4;
         defender.buffs.defendActive = false;
     }
-    mitigation += defender.buffs.damageReduction;
-    defender.buffs.damageReduction = 0;
-    return Math.max(3, Math.floor(power - mitigation));
+    mitigation += Number(defender.buffs?.damageReduction) || 0;
+    if (defender.buffs)
+        defender.buffs.damageReduction = 0;
+    const damage = Math.max(3, Math.floor(power - mitigation));
+    return Number.isFinite(damage) ? damage : 3;
 }
 function pickAiAction(self, foe) {
-    const hpRatio = self.hp / self.maxHp;
+    const maxHp = Number(self.maxHp) || 1;
+    const hpRatio = (Number(self.hp) || 0) / maxHp;
     if (hpRatio < 0.3 && Math.random() < 0.45)
         return 'defend';
-    if (self.buffs.rallyActive === false && hpRatio > 0.5 && Math.random() < 0.3)
+    if (!self.buffs?.rallyActive && hpRatio > 0.5 && Math.random() < 0.3)
         return 'rally';
-    if (foe.buffs.defendActive && Math.random() < 0.35)
+    if (foe.buffs?.defendActive && Math.random() < 0.35)
         return 'rally';
     return 'strike';
 }
 function applyActionPrep(fighter, action) {
+    if (!fighter.buffs) {
+        fighter.buffs = { defendActive: false, rallyActive: false, damageReduction: 0 };
+    }
+    const maxHp = Number(fighter.maxHp) || 80;
+    const hp = Number(fighter.hp) || 0;
+    fighter.maxHp = maxHp;
+    fighter.hp = hp;
     if (action === 'defend') {
         fighter.buffs.defendActive = true;
-        const heal = Math.floor(fighter.maxHp * 0.06);
-        fighter.hp = Math.min(fighter.maxHp, fighter.hp + heal);
+        const heal = Math.floor(maxHp * 0.06);
+        fighter.hp = Math.min(maxHp, hp + heal);
     }
     else if (action === 'rally') {
         fighter.buffs.rallyActive = true;
@@ -80,7 +92,8 @@ export function resolveTurn(player, opponent, playerAction) {
                 });
             }
             else {
-                target.hp = Math.max(0, target.hp - damage);
+                const targetHp = Number(target.hp) || 0;
+                target.hp = Math.max(0, targetHp - damage);
                 events.push({
                     actor: turn.actor,
                     action: turn.action,

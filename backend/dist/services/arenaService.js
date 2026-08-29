@@ -254,11 +254,33 @@ async function recordMatch(userId, battle, pointsEarned) {
     }
     return { profile, pointsEarned, summary };
 }
-function cloneFighter(f) {
+function sanitizeFighter(f) {
+    const attack = Number(f.attack);
+    const defense = Number(f.defense);
+    const maxHp = Number(f.maxHp);
+    const hpRaw = Number(f.hp);
+    const safeMaxHp = Number.isFinite(maxHp) && maxHp > 0 ? maxHp : 80;
+    const safeHp = Number.isFinite(hpRaw) ? Math.min(safeMaxHp, Math.max(0, hpRaw)) : safeMaxHp;
     return {
-        ...f,
-        buffs: { ...f.buffs },
+        characterId: Number(f.characterId) || 0,
+        name: f.name ?? 'Unknown',
+        imageUrl: f.imageUrl,
+        culture: f.culture ?? 'Unknown',
+        house: f.house ?? null,
+        attack: Number.isFinite(attack) ? attack : 10,
+        defense: Number.isFinite(defense) ? defense : 10,
+        maxHp: safeMaxHp,
+        hp: safeHp,
+        status: f.status ?? 'Unknown',
+        buffs: {
+            defendActive: Boolean(f.buffs?.defendActive),
+            rallyActive: Boolean(f.buffs?.rallyActive),
+            damageReduction: Number(f.buffs?.damageReduction) || 0,
+        },
     };
+}
+function cloneFighter(f) {
+    return sanitizeFighter(f);
 }
 export async function submitTurn(userId, battleId, playerAction) {
     const battle = await ArenaBattle.findOne({ _id: battleId, userId, status: 'active' });
@@ -267,17 +289,19 @@ export async function submitTurn(userId, battleId, playerAction) {
     const player = cloneFighter(battle.player);
     const opponent = cloneFighter(battle.opponent);
     const result = resolveTurn(player, opponent, playerAction);
-    battle.player = result.player;
-    battle.opponent = result.opponent;
+    battle.player = sanitizeFighter(result.player);
+    battle.opponent = sanitizeFighter(result.opponent);
+    battle.markModified('player');
+    battle.markModified('opponent');
     battle.turnNumber += 1;
     let damageDealt = 0;
     for (const ev of result.events) {
         battle.log.push(ev.message);
         if (ev.actor === 'player')
-            damageDealt += ev.damage;
+            damageDealt += Number(ev.damage) || 0;
     }
     const profile = await getOrCreateProfile(userId);
-    profile.totalDamageDealt += damageDealt;
+    profile.totalDamageDealt = (Number(profile.totalDamageDealt) || 0) + damageDealt;
     await profile.save();
     let battleComplete = false;
     let matchResult = null;
@@ -288,12 +312,14 @@ export async function submitTurn(userId, battleId, playerAction) {
             const nextOppIdx = battle.activeOpponentTeamIndex + 1;
             if (nextOppIdx < battle.opponentTeam.length) {
                 battle.activeOpponentTeamIndex = nextOppIdx;
-                battle.opponent = cloneFighter(battle.opponentTeam[nextOppIdx]);
+                battle.opponent = sanitizeFighter(battle.opponentTeam[nextOppIdx]);
+                battle.markModified('opponent');
                 battle.log.push(`Next opponent: ${battle.opponent.name} enters!`);
                 const nextPlayerIdx = battle.activePlayerTeamIndex + 1;
                 if (nextPlayerIdx < battle.playerTeam.length && battle.player.hp < battle.player.maxHp * 0.4) {
                     battle.activePlayerTeamIndex = nextPlayerIdx;
-                    battle.player = cloneFighter(battle.playerTeam[nextPlayerIdx]);
+                    battle.player = sanitizeFighter(battle.playerTeam[nextPlayerIdx]);
+                    battle.markModified('player');
                     battle.log.push(`${battle.player.name} tags in!`);
                 }
             }
@@ -306,7 +332,8 @@ export async function submitTurn(userId, battleId, playerAction) {
             const nextPIdx = battle.activePlayerTeamIndex + 1;
             if (nextPIdx < battle.playerTeam.length) {
                 battle.activePlayerTeamIndex = nextPIdx;
-                battle.player = cloneFighter(battle.playerTeam[nextPIdx]);
+                battle.player = sanitizeFighter(battle.playerTeam[nextPIdx]);
+                battle.markModified('player');
                 battle.log.push(`${battle.player.name} replaces the fallen!`);
             }
             else {
@@ -323,8 +350,11 @@ export async function submitTurn(userId, battleId, playerAction) {
             const nextId = battle.tournament.bracketOpponentIds[battle.tournament.currentOpponentIndex];
             const nextChar = await loadCharacter(nextId);
             nextOpponent = fighterToBattle(computeFighterStats(nextChar));
-            battle.opponent = nextOpponent;
-            battle.player.hp = Math.min(battle.player.maxHp, battle.player.hp + Math.floor(battle.player.maxHp * 0.15));
+            battle.opponent = sanitizeFighter(nextOpponent);
+            battle.markModified('opponent');
+            const heal = Math.floor(battle.player.maxHp * 0.15);
+            battle.player.hp = Math.min(battle.player.maxHp, battle.player.hp + heal);
+            battle.markModified('player');
             battle.log.push(`Round ${battle.tournament.round} — ${battle.opponent.name} steps forward!`);
             tournamentAdvanced = true;
         }

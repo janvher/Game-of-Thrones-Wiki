@@ -21,7 +21,7 @@ export function AppLayout() {
         <div className="brand">
           <span className="brand-mark">⚔</span>
           <div>
-            <strong>Umpisa Inc - Jan Genvher Papica Exam</strong>
+            <strong>Game of Thrones Wiki</strong>
             <small>Wiki of Thrones Hub</small>
           </div>
         </div>
