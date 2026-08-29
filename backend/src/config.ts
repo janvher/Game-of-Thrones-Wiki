@@ -4,9 +4,9 @@ dotenv.config();
 
 export const config = {
   port: parseInt(process.env.PORT ?? '3001', 10),
-  jwtSecret: process.env.JWT_SECRET ?? 'umpisa-dev-secret-change-in-production',
+  jwtSecret: process.env.JWT_SECRET ?? 'thrones-dev-secret-change-in-production',
   nodeEnv: process.env.NODE_ENV ?? 'development',
-  mongodbUri: process.env.MONGODB_URI ?? 'mongodb://localhost:27017/umpisa',
+  mongodbUri: process.env.MONGODB_URI ?? 'mongodb://localhost:27017/thrones-wiki',
   iceAndFireBaseUrl:
     process.env.ICE_AND_FIRE_BASE_URL ?? 'https://anapioficeandfire.com/api',
   wikiOfThronesBaseUrl:
@@ -15,5 +15,5 @@ export const config = {
   wikiLoreCategoryId: parseInt(process.env.WIKI_LORE_CATEGORY_ID ?? '174', 10),
   vapidPublicKey: process.env.VAPID_PUBLIC_KEY ?? '',
   vapidPrivateKey: process.env.VAPID_PRIVATE_KEY ?? '',
-  vapidSubject: process.env.VAPID_SUBJECT ?? 'mailto:demo@umpisa.dev',
+  vapidSubject: process.env.VAPID_SUBJECT ?? 'mailto:demo@thrones.app',
 };

@@ -1,6 +1,6 @@
 self.addEventListener('push', (event) => {
   let data = {
-    title: 'Umpisa Inc - Jan Genvher Papica Exam',
+    title: 'Game of Thrones Wiki',
     body: 'You have a new update.',
     url: '/dashboard',
   };
@@ -17,7 +17,7 @@ self.addEventListener('push', (event) => {
     body: data.body,
     icon: '/icon.svg',
     badge: '/icon.svg',
-    tag: 'umpisa-notification',
+    tag: 'thrones-notification',
     renotify: true,
     data: { url: data.url || '/dashboard' },
   };

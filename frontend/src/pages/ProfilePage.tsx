@@ -35,11 +35,11 @@ export function ProfilePage() {
       <PushNotificationSettings />
       <GraphQLFavoritesPanel />
 
-      <Card title="About Umpisa Inc - Jan Genvher Papica Exam">
+      <Card title="About Game of Thrones Wiki">
         <p>
-          Game of Thrones saga explorer for the Full Stack Developer exam. React frontend,
-          Node/Express API, MongoDB, GraphQL, push notifications, page analytics, character data
-          from An API of Ice and Fire, and lore/articles from{' '}
+          A personal Game of Thrones saga hub. React frontend, Node/Express API, MongoDB, GraphQL,
+          push notifications, page analytics, character data from An API of Ice and Fire, and
+          lore/articles from{' '}
           <a href="https://wikiofthrones.com/" target="_blank" rel="noreferrer">
             Wiki of Thrones
           </a>

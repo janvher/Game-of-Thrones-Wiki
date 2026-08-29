@@ -5,7 +5,7 @@ import { migrateFavoritesCollection } from './db/migrate.js';
 import { User } from './models/User.js';
 import { createApp } from './app.js';
 import { warmImageCache } from './services/characterImages.js';
-const DEMO_EMAIL = 'demo@umpisa.dev';
+const DEMO_EMAIL = 'demo@thrones.app';
 const DEMO_PASSWORD = 'password123';
 async function ensureDemoUser() {
     const passwordHash = await bcrypt.hash(DEMO_PASSWORD, 10);
@@ -21,7 +21,7 @@ async function main() {
     await warmImageCache();
     const app = createApp();
     app.listen(config.port, () => {
-        console.log(`Umpisa Inc - Jan Genvher Papica Exam API on http://localhost:${config.port}`);
+        console.log(`Game of Thrones Wiki API on http://localhost:${config.port}`);
         console.log('Court & analytics charts: GET /api/court/realm-insights');
     });
 }

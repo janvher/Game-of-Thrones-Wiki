@@ -6,7 +6,7 @@ import { User } from './models/User.js';
 import { createApp } from './app.js';
 import { warmImageCache } from './services/characterImages.js';
 
-const DEMO_EMAIL = 'demo@umpisa.dev';
+const DEMO_EMAIL = 'demo@thrones.app';
 const DEMO_PASSWORD = 'password123';
 
 async function ensureDemoUser(): Promise<void> {
@@ -30,7 +30,7 @@ async function main(): Promise<void> {
 
   const app = createApp();
   app.listen(config.port, () => {
-    console.log(`Umpisa Inc - Jan Genvher Papica Exam API on http://localhost:${config.port}`);
+    console.log(`Game of Thrones Wiki API on http://localhost:${config.port}`);
     console.log('Court & analytics charts: GET /api/court/realm-insights');
   });
 }

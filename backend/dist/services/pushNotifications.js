@@ -54,7 +54,7 @@ export async function sendTestPush(userId) {
         return { sent: false, subscriptionCount: 0 };
     }
     await sendPushToUser(userId, {
-        title: 'Umpisa Inc - Jan Genvher Papica Exam',
+        title: 'Game of Thrones Wiki',
         body: 'Push notifications are working. Winter is coming.',
         url: '/dashboard',
     });

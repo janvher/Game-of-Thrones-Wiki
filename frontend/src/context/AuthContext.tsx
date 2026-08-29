@@ -10,7 +10,7 @@ import {
 import { api } from '../services/api';
 import type { User } from '../types';
 
-const TOKEN_KEY = 'umpisa_token';
+const TOKEN_KEY = 'thrones_token';
 
 interface AuthContextValue {
   user: User | null;

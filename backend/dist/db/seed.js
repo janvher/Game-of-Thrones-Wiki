@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { connectDb, disconnectDb } from './connection.js';
 import { User } from '../models/User.js';
-const DEMO_EMAIL = 'demo@umpisa.dev';
+const DEMO_EMAIL = 'demo@thrones.app';
 const DEMO_PASSWORD = 'password123';
 async function seed() {
     await connectDb();

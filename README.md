@@ -1,29 +1,27 @@
-# Umpisa Inc. — Jan Genvher Papica Exam
+# Game of Thrones Wiki
 
-Game of Thrones saga hub: browse characters, read Wiki of Thrones lore, and save favorites to your court.
+Personal full-stack project by **Jan Genvher Papica** — a Game of Thrones saga hub for browsing characters, reading Wiki of Thrones lore, saving favorites to your court, and fighting in the Arena.
 
-## Features
+Live source: [github.com/janvher/Game-of-Thrones-Wiki](https://github.com/janvher/Game-of-Thrones-Wiki)
 
-| Requirement | Implementation |
-|-------------|----------------|
-| Login | JWT register / login |
-| 4 screens | Great Hall · Character Hub · Character Detail · Your Court (+ Profile) |
-| 2 workflows | **Explore** (browse → detail → wiki) · **Collection** (favorites) |
-| API connection | Ice and Fire + Wiki of Thrones + Thrones API |
-| Routing | React Router with protected routes |
-| Unit tests | Vitest (frontend + backend) |
-| MongoDB | Users, favorites, page-view analytics |
-| Docker | `docker compose up --build` |
-| Nice-to-have | GraphQL · Web Push · page analytics · **Arena combat game** |
+## What it does
+
+- JWT authentication (register / login)
+- Great Hall, Character Hub, Character Detail, Your Court, Profile, and Arena
+- Explore workflow (browse → detail → wiki) and Collection workflow (favorites)
+- Ice and Fire + Wiki of Thrones + Thrones API
+- Protected React Router screens
+- MongoDB for users, favorites, and page-view analytics
+- GraphQL, Web Push, and a turn-based Arena combat mode
 
 ## Screens
 
-- **Great Hall** — charts (visits, actions, arena results), lore feed  
-- **Character Hub** — 3×3 paginated roster with portraits  
-- **Character Detail** — saga fields, status, linked wiki articles  
-- **Your Court** — saved favorites  
-- **Profile** — account, push notifications, GraphQL favorites panel  
-- **Arena** — turn-based combat (Strike / Defend / Rally), duel / team / tournament modes  
+- **Great Hall** — charts (visits, actions, arena results), lore feed
+- **Character Hub** — 3×3 paginated roster with portraits
+- **Character Detail** — saga fields, status, linked wiki articles
+- **Your Court** — saved favorites
+- **Profile** — account, push notifications, GraphQL favorites panel
+- **Arena** — turn-based combat (Strike / Defend / Rally), duel / team / tournament modes
 
 ## Quick start
 
@@ -47,7 +45,7 @@ docker compose up --build
 npm install && npm run install:all
 cp backend/.env.example backend/.env
 
-docker run -d -p 27017:27017 --name umpisa-mongo mongo:7   # if MongoDB not running
+docker run -d -p 27017:27017 --name thrones-mongo mongo:7   # if MongoDB not running
 npm run dev
 ```
 
@@ -63,7 +61,7 @@ npm test
 
 | | |
 |---|---|
-| Email | `demo@umpisa.dev` |
+| Email | `demo@thrones.app` |
 | Password | `password123` |
 
 ## REST API
@@ -95,7 +93,7 @@ Optional: `npm run generate-vapid --prefix backend` then copy keys to `backend/.
 
 ---
 
-## Full stack
+## Stack
 
 ### Frontend
 
@@ -104,8 +102,8 @@ Optional: `npm run generate-vapid --prefix backend` then copy keys to `backend/.
 | **React 18** | UI components and screen composition |
 | **TypeScript** | Type-safe props, API models, and fewer runtime bugs |
 | **Vite** | Fast dev server and production bundling |
-| **React Router v7** | Client-side routing and protected exam screens |
-| **Context API** | Global auth session (token, user) without extra libraries |
+| **React Router v7** | Client-side routing and protected screens |
+| **Context API** | Global auth session (token, user) |
 | **CSS (global)** | Layout, 3×3 grid, cards, and app theme |
 | **Service Worker** (`/sw.js`) | Receives Web Push events in the browser |
 
@@ -119,7 +117,7 @@ Optional: `npm run generate-vapid --prefix backend` then copy keys to `backend/.
 | **Zod** | Validates query/body input before handlers run |
 | **JWT** (`jsonwebtoken`) | Stateless login tokens for protected routes |
 | **bcryptjs** | Hashes passwords before storing in MongoDB |
-| **GraphQL Yoga** | GraphQL API + GraphiQL explorer (nice-to-have) |
+| **GraphQL Yoga** | GraphQL API + GraphiQL explorer |
 | **web-push** | Sends browser notifications when favorites change |
 | **tsx** | Runs TypeScript directly in development |
 
@@ -130,7 +128,7 @@ Optional: `npm run generate-vapid --prefix backend` then copy keys to `backend/.
 | **MongoDB 7** | Document store for users, favorites, push subscriptions, and page views |
 | **Mongoose** | Schemas, queries, and indexes on MongoDB collections |
 
-> This project uses **MongoDB (NoSQL)**, not SQL. Data is stored as JSON-like documents, not relational tables.
+This project uses **MongoDB (NoSQL)**. Data is stored as JSON-like documents.
 
 ### External APIs
 
@@ -144,7 +142,7 @@ Optional: `npm run generate-vapid --prefix backend` then copy keys to `backend/.
 
 | Technology | Purpose |
 |------------|---------|
-| **Docker Compose** | Runs MongoDB, API, and frontend together for grading/demo |
+| **Docker Compose** | Runs MongoDB, API, and frontend together |
 | **Nginx** (frontend image) | Serves built React app and proxies `/api` to the backend |
 | **concurrently** | Runs backend and frontend with one `npm run dev` |
 | **Vitest** | Unit tests for API helpers and UI components |
@@ -154,9 +152,7 @@ Optional: `npm run generate-vapid --prefix backend` then copy keys to `backend/.
 
 ## Gallery
 
-Visual index of the **Umpisa Inc — Jan Genvher Papica Exam** app: screens for login, browsing the saga, favorites, analytics, and arena combat. Use this section for quick review without running the project.
-
-What's included:
+Screens from the app: login, browsing the saga, favorites, analytics, and arena combat.
 
 - **Login** — sign-in and demo account entry.
 - **Great Hall** — analytics charts (visits, actions, arena results) and Wiki of Thrones feed.
